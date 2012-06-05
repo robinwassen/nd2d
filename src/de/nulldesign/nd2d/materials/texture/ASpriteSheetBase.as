@@ -30,6 +30,7 @@
 
 package de.nulldesign.nd2d.materials.texture {
 
+	import de.nulldesign.nd2d.display.World2D;
 	import de.nulldesign.nd2d.events.SpriteSheetAnimationEvent;
 	import de.nulldesign.nd2d.materials.texture.SpriteSheetAnimation;
 
@@ -133,7 +134,7 @@ package de.nulldesign.nd2d.materials.texture {
 			ctime = t;
 
 			// Update the timer part, to get time based animation
-			interp += _fps * (ctime - otime);
+			interp += _fps * (ctime - otime) * World2D.gameSpeed;
 			if(interp >= 1.0) {
 				frameIdx++;
 				interp = 0;
