@@ -275,5 +275,14 @@ package de.nulldesign.nd2d.display {
 
 			super.dispose();
 		}
+		
+		// Shorthand to create with texture, atlas and frame name
+		public static function Create(textureObject:Texture2D, atlas:ASpriteSheetBase, frameName:String) : Sprite2D {
+			var s:Sprite2D = new Sprite2D(textureObject);
+			s.setSpriteSheet(atlas);
+			s.setFrameByName(frameName);
+			
+			return s;
+		}
 	}
 }
