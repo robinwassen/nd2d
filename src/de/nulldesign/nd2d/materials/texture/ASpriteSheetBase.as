@@ -47,7 +47,7 @@ package de.nulldesign.nd2d.materials.texture {
 		protected var frameNameToIndex:Dictionary = new Dictionary();
 		protected var uvRects:Vector.<Rectangle>;
 		protected var animationMap:Dictionary = new Dictionary();
-		protected var activeAnimation:SpriteSheetAnimation;
+		protected var _activeAnimation:SpriteSheetAnimation;
 
 		protected var spritesPackedWithoutSpace:Boolean;
 
@@ -93,7 +93,12 @@ package de.nulldesign.nd2d.materials.texture {
 		
 		public function get activeAnimation() : SpriteSheetAnimation 
 		{
-			return activeAnimation;
+			return _activeAnimation;
+		}
+		
+		public function set activeAnimation(value:SpriteSheetAnimation) : void
+		{
+			_activeAnimation = value;			
 		}
 
 		protected var _frame:uint = int.MAX_VALUE;
@@ -127,7 +132,7 @@ package de.nulldesign.nd2d.materials.texture {
 
 		public function update(t:Number):void {
 
-			if(!activeAnimation) return;
+			if(!_activeAnimation) return;
 
 			var prevFrameIdx:int = frameIdx;
 
@@ -140,19 +145,19 @@ package de.nulldesign.nd2d.materials.texture {
 				interp = 0;
 			}
 
-			if(activeAnimation.loop) {
-				frameIdx = frameIdx % activeAnimation.numFrames;
+			if(_activeAnimation.loop) {
+				frameIdx = frameIdx % _activeAnimation.numFrames;
 			} else {
-				frameIdx = Math.min(frameIdx, activeAnimation.numFrames - 1);
+				frameIdx = Math.min(frameIdx, _activeAnimation.numFrames - 1);
 			}
 
-			frame = activeAnimation.frames[frameIdx];
+			frame = _activeAnimation.frames[frameIdx];
 
 			otime = ctime;
 
 			// skipped frames
-			if(triggerEventOnLastFrame && (frameIdx == activeAnimation.numFrames - 1 || frameIdx < prevFrameIdx)) {
-				if(!activeAnimation.loop) {
+			if(triggerEventOnLastFrame && (frameIdx == _activeAnimation.numFrames - 1 || frameIdx < prevFrameIdx)) {
+				if(!_activeAnimation.loop) {
 					triggerEventOnLastFrame = false;
 				}
 				dispatchEvent(new SpriteSheetAnimationEvent(SpriteSheetAnimationEvent.ANIMATION_FINISHED));
@@ -160,17 +165,17 @@ package de.nulldesign.nd2d.materials.texture {
 		}
 
 		public function stopCurrentAnimation():void {
-			activeAnimation = null;
+			_activeAnimation = null;
 		}
 
 		public function playAnimation(name:String, startIdx:uint = 0, restart:Boolean = false, triggerEventOnLastFrame:Boolean = false):void {
 
 			this.triggerEventOnLastFrame = triggerEventOnLastFrame;
 
-			if(restart || activeAnimation != animationMap[name]) {
+			if(restart || _activeAnimation != animationMap[name]) {
 				frameIdx = startIdx;
-				activeAnimation = animationMap[name];
-				frame = activeAnimation.frames[0];
+				_activeAnimation = animationMap[name];
+				frame = _activeAnimation.frames[0];
 			}
 		}
 
