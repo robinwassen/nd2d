@@ -85,6 +85,13 @@ package de.nulldesign.nd2d.display {
 			v.color = value;
 			material.modifyColorInBuffer(3, v.r, v.g, v.b, v.a);
 		}
+		
+		public function set allColors(value:uint) : void {
+			this.topLeftColor 		= value;
+			this.topRightColor 		= value;
+			this.bottomLeftColor 	= value;
+			this.bottomRightColor 	= value;			
+		}
 
 		public function Quad2D(pWidth:Number, pHeight:Number) {
 
