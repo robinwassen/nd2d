@@ -61,7 +61,7 @@ package de.nulldesign.nd2d.materials.texture {
 
 		public var frameUpdated:Boolean = true;
 
-		protected var _fps:uint;
+		protected var _fps:Number;
 
 		protected var _spriteWidth:Number;
 		protected var _spriteHeight:Number;
@@ -81,12 +81,12 @@ package de.nulldesign.nd2d.materials.texture {
 			return _frameName;
 		}
 				
-		public function get fps():uint 
+		public function get fps():Number 
 		{
 			return _fps;
 		}
 		
-		public function set fps(value:uint):void 
+		public function set fps(value:Number):void 
 		{
 			_fps = value;
 		}
