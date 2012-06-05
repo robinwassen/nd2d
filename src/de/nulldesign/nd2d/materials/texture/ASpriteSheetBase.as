@@ -170,6 +170,7 @@ package de.nulldesign.nd2d.materials.texture {
 			if(restart || activeAnimation != animationMap[name]) {
 				frameIdx = startIdx;
 				activeAnimation = animationMap[name];
+				frame = activeAnimation.frames[0];
 			}
 		}
 

@@ -57,13 +57,12 @@ package de.nulldesign.nd2d.display {
 		protected var _textBitmapData:BitmapData = new BitmapData(1, 1, true, 0);
 
 		// Text Field Properties (Dynamic)
-		protected var _textFormat:TextFormat = new TextFormat();
+		protected var _textFormat:TextFormat = new TextFormat(null, null, 0xffffff);
 
 		protected var _type:String = TextFieldType.DYNAMIC;
 		protected var _autoSize:String = TextFieldAutoSize.LEFT;
 
 		protected var _text:String = "";
-		protected var _textColor:uint = 0xffffff;
 		protected var _textWidth:Number = 0;
 		protected var _textHeight:Number = 0;
 
@@ -105,7 +104,6 @@ package de.nulldesign.nd2d.display {
 		}
 
 		public function set textFormat(v:TextFormat):void {
-			_textColor = v.color ? uint(v.color) : _textColor;
 			_textFormat = v;
 			_needsRedraw = true;
 		}
@@ -147,11 +145,11 @@ package de.nulldesign.nd2d.display {
 		}
 
 		public function get textColor():uint {
-			return _textColor;
+			return uint(_textFormat.color);
 		}
 
 		public function set textColor(v:uint):void {
-			_textColor = v;
+			_textFormat.color = v;
 			_needsRedraw = true;
 		}
 
@@ -295,18 +293,33 @@ package de.nulldesign.nd2d.display {
 			_needsRedraw = true;
 		}
 
+		public function get filters():Array {
+			return _nativeTextField.filters;
+		}
+
+		public function set filters(v:Array):void {
+			_nativeTextField.filters = v;
+			_needsRedraw = true;
+		}
+
 		public function TextField2D() {
 			super(Texture2D.textureFromBitmapData(_textBitmapData));
 		}
 
-		protected function redraw():void {
+		public function redraw():void {
 
+<<<<<<< HEAD
 			if(_styleSheet)
 				_nativeTextField.htmlText = _text;
 			else
 				_nativeTextField.text = _text;
 			
 			_nativeTextField.textColor = _textColor;
+=======
+			// Set text field properties.
+			_nativeTextField.defaultTextFormat = _textFormat;
+			_nativeTextField.htmlText = _text;
+>>>>>>> upstream/master
 
 			_nativeTextField.border = _border;
 			_nativeTextField.borderColor = _borderColor;
@@ -378,12 +391,13 @@ package de.nulldesign.nd2d.display {
 					throw new Error("The type specified is not a member of flash.text.TextFieldType");
 					break;
 			}
+
+			_needsRedraw = false;
 		}
 
 		override protected function step(elapsed:Number):void {
 			if(_needsRedraw) {
 				redraw();
-				_needsRedraw = false;
 			}
 
 			// TODO: If type is INPUT we need to update the native text field position relative to this x/y.
