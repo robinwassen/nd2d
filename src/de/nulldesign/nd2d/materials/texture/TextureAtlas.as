@@ -61,8 +61,7 @@ package de.nulldesign.nd2d.materials.texture {
 			}
 		}
 
-		override public function addAnimation(name:String, keyFrames:Array, loop:Boolean):void {
-
+		override public function addAnimation(name:String, keyFrames:Array, loop:Boolean):void {			
 			if(keyFrames[i] is String) {
 
 				// make indices out of names
@@ -98,9 +97,11 @@ package de.nulldesign.nd2d.materials.texture {
 
 			parser.parse(value);
 
-			frameNameToIndex = parser.frameNameToIndex;
-			frames = parser.frames;
-			offsets = parser.offsets;
+			frameNameToIndex 	= parser.frameNameToIndex;
+			frames 				= parser.frames;
+			offsets 			= parser.offsets;
+			
+			parser.addAnimationsTo(this);			
 
 			uvRects = new Vector.<Rectangle>(frames.length, true);
 			frame = 0;

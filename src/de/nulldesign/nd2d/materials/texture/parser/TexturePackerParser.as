@@ -30,6 +30,8 @@
 
 package de.nulldesign.nd2d.materials.texture.parser {
 
+	import de.nulldesign.nd2d.materials.texture.ASpriteSheetBase;
+	import de.nulldesign.nd2d.materials.texture.parser.parserhelper.AnimationEntry;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
@@ -61,13 +63,13 @@ package de.nulldesign.nd2d.materials.texture.parser {
 					break;
 			}
 		}
-
+		
 		protected function parseCocos2DDefault(cocos2DXML:XML):void {
 
 			var type:String;
 			var data:String;
 			var array:Array;
-
+			
 			var topKeys:XMLList = cocos2DXML.dict.key;
 			var topDicts:XMLList = cocos2DXML.dict.dict;
 
@@ -75,14 +77,14 @@ package de.nulldesign.nd2d.materials.texture.parser {
 				switch(topKeys[k].toString()) {
 					case "frames":
 					{
-						var frameKeys:XMLList = topDicts[k].key;
-						var frameDicts:XMLList = topDicts[k].dict;
+						var frameKeys:XMLList 	= topDicts[k].key;
+						var frameDicts:XMLList 	= topDicts[k].dict;
 
 						for(var l:uint = 0; l < frameKeys.length(); l++) {
 
-							var keyName:String = frameKeys[l];
-							var propKeys:XMLList = frameDicts[l].key;
-							var propAll:XMLList = frameDicts[l].*;
+							var keyName:String 		= frameKeys[l];
+							var propKeys:XMLList 	= frameDicts[l].key;
+							var propAll:XMLList 	= frameDicts[l].*;
 
 							frameNameToIndex[keyName] = l;
 
@@ -145,6 +147,28 @@ package de.nulldesign.nd2d.materials.texture.parser {
 								}
 							}
 						}
+					}
+						break;
+					case "animations":
+					{						
+						var keys:XMLList 	= topDicts[k].key;
+						var dicts:XMLList 	= topDicts[k].dict;
+						
+						for (var animationIndex:uint = 0; animationIndex < keys.length(); animationIndex++) {
+							
+							var animationKey:XML 		= keys[animationIndex];
+							var animationDict:XML 		= dicts[animationIndex];							
+							
+							var entry:AnimationEntry = new AnimationEntry();
+							entry.name = animationKey;
+							entry.loop = (animationKey.@loop == "true");
+							
+							for (var aniFrameIndex:uint = 0; aniFrameIndex < animationDict.frame.length(); aniFrameIndex++) {
+								entry.keyFrames.push(String(animationDict.frame[aniFrameIndex]));								
+							}
+							
+							this.animationList.push(entry);
+						}						
 					}
 						break;
 				}
