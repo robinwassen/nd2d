@@ -182,6 +182,8 @@ package de.nulldesign.nd2d.display {
 		public var mouseEnabled:Boolean = false;
 
 		public var boundingSphereRadius:Number;
+		
+		public var pixelSnap:Boolean = true;
 
 		protected var timeSinceStartInSeconds:Number = 0.0;
 
@@ -496,7 +498,13 @@ package de.nulldesign.nd2d.display {
 			localModelMatrix.appendRotation(_rotationZ, Vector3D.Z_AXIS);
 			localModelMatrix.appendRotation(_rotationY, Vector3D.Y_AXIS);
 			localModelMatrix.appendRotation(_rotationX, Vector3D.X_AXIS);
-			localModelMatrix.appendTranslation(_x, _y, _z);
+			
+			if (pixelSnap) {
+				localModelMatrix.appendTranslation(Math.round(_x), Math.round(_y), _z);
+			}
+			else {
+				localModelMatrix.appendTranslation(_x, _y, _z);
+			}
 		}
 
 		/**
