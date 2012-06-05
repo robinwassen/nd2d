@@ -60,7 +60,7 @@ package de.nulldesign.nd2d.materials.texture {
 
 		public var frameUpdated:Boolean = true;
 
-		protected var fps:uint;
+		protected var _fps:uint;
 
 		protected var _spriteWidth:Number;
 		protected var _spriteHeight:Number;
@@ -78,6 +78,15 @@ package de.nulldesign.nd2d.materials.texture {
 		
 		public function get frameName() : String {
 			return _frameName;
+		}
+				
+		public function get fps():uint 
+		{
+			return _fps;
+		}
+		public function set fps(value:uint):void 
+		{
+			_fps = value;
 		}
 
 		protected var _frame:uint = int.MAX_VALUE;
@@ -118,7 +127,7 @@ package de.nulldesign.nd2d.materials.texture {
 			ctime = t;
 
 			// Update the timer part, to get time based animation
-			interp += fps * (ctime - otime);
+			interp += _fps * (ctime - otime);
 			if(interp >= 1.0) {
 				frameIdx++;
 				interp = 0;
