@@ -65,7 +65,8 @@ package de.nulldesign.nd2d.materials.texture {
 		protected var _spriteWidth:Number;
 		protected var _spriteHeight:Number;
 		protected var _sheetWidth:Number;
-		protected var _sheetHeight:Number;
+		protected var _sheetHeight:Number;		
+		protected var _frameName:String;
 
 		public function get spriteWidth():Number {
 			return _spriteWidth;
@@ -73,6 +74,10 @@ package de.nulldesign.nd2d.materials.texture {
 
 		public function get spriteHeight():Number {
 			return _spriteHeight;
+		}
+		
+		public function get frameName() : String {
+			return _frameName;
 		}
 
 		protected var _frame:uint = int.MAX_VALUE;
@@ -179,6 +184,7 @@ package de.nulldesign.nd2d.materials.texture {
 
 		public function setFrameByName(value:String):void {
 			frame = getIndexForFrame(value);
+			_frameName = value;
 		}
 
 		public function getUVRectForFrame(textureWidth:Number, textureHeight:Number):Rectangle {
