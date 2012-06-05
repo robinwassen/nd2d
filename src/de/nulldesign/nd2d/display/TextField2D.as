@@ -307,20 +307,15 @@ package de.nulldesign.nd2d.display {
 		}
 
 		public function redraw():void {
-
-<<<<<<< HEAD
+			
+			// Set text field properties.
 			if(_styleSheet)
 				_nativeTextField.htmlText = _text;
 			else
 				_nativeTextField.text = _text;
 			
-			_nativeTextField.textColor = _textColor;
-=======
-			// Set text field properties.
-			_nativeTextField.defaultTextFormat = _textFormat;
-			_nativeTextField.htmlText = _text;
->>>>>>> upstream/master
-
+			_nativeTextField.textColor = textColor;
+			
 			_nativeTextField.border = _border;
 			_nativeTextField.borderColor = _borderColor;
 			_nativeTextField.background = _background;
