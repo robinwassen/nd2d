@@ -84,9 +84,15 @@ package de.nulldesign.nd2d.materials.texture {
 		{
 			return _fps;
 		}
+		
 		public function set fps(value:uint):void 
 		{
 			_fps = value;
+		}
+		
+		public function get activeAnimation() : SpriteSheetAnimation 
+		{
+			return activeAnimation;
 		}
 
 		protected var _frame:uint = int.MAX_VALUE;
