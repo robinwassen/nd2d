@@ -95,6 +95,7 @@ package de.nulldesign.nd2d.display {
 		internal var topMostMouseNode:Node2D;
 
 		public static var isHardwareAccelerated:Boolean;
+		public static var gameSpeed:Number = 1;
 
 		/**
 		 * Constructor of class world
@@ -231,8 +232,8 @@ package de.nulldesign.nd2d.display {
 
 		protected function mainLoop(e:Event):void {
 
-			var t:Number = getTimer() * 0.001;
-			var elapsed:Number = t - lastFramesTime;
+			var t:Number = getTimer() * 0.001;			
+			var elapsed:Number = (t - lastFramesTime) * World2D.gameSpeed;
 
 			if(scene && context3D && context3D.driverInfo != "Disposed") {
 				context3D.clear(scene.br, scene.bg, scene.bb, 1.0);
