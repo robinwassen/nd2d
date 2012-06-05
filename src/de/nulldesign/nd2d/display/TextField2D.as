@@ -31,6 +31,7 @@
 package de.nulldesign.nd2d.display {
 
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
+	import flash.text.StyleSheet;
 
 	import flash.display.BitmapData;
 	import flash.geom.Point;
@@ -45,7 +46,7 @@ package de.nulldesign.nd2d.display {
 	/**
 	 * TextField2D
 	 * <p>Renders a flash native textfield to a bitmap / texture.</p>
-	 * Note that changing the text in the textfield will cause a complete invalidation and therefore a new texture upload to the GPU, in other words: It's slow! It's good for static text. For dynamic text try to use the BitmapFont2D
+	 * Note that changing the text in the textfield will cause a complete invalidation and therefore a new texture upload to the GPU. It's good for static text. For dynamic text try to use the BitmapFont2D
 	 * @author Ryan
 	 */
 	public class TextField2D extends Sprite2D {
@@ -74,13 +75,16 @@ package de.nulldesign.nd2d.display {
 
 		protected var _thickness:Number = 0;
 		protected var _sharpness:Number = 0;
-		protected var _gridFitType:String = GridFitType.NONE;
-		protected var _antiAliasType:String = AntiAliasType.NORMAL;
+		protected var _gridFitType:String = GridFitType.PIXEL;
+		protected var _antiAliasType:String = AntiAliasType.ADVANCED;
 
 		protected var _autoWrap:Boolean = true;
 		protected var _wordWrap:Boolean = false;
 		protected var _embedFonts:Boolean = false;
 		protected var _condenseWhite:Boolean = false;
+		
+		protected var _styleSheet:Boolean = false;
+		protected var _style:StyleSheet;
 
 		// TODO: Text Field Properties (Input)
 		//protected var _restrict:String = null;
@@ -115,6 +119,14 @@ package de.nulldesign.nd2d.display {
 			// TODO: Allow switching back and forth from dynamic text to input text?
 			_needsRedraw = true;
 		}
+		
+		public function set StyleSheet(s:StyleSheet):void 
+		{
+			_style = s;
+			_styleSheet = true;
+			_needsRedraw = true;
+		}
+		
 
 		public function get autoSize():String {
 			return _autoSize;
@@ -289,9 +301,11 @@ package de.nulldesign.nd2d.display {
 
 		protected function redraw():void {
 
-			// Set text field properties.
-			_nativeTextField.defaultTextFormat = _textFormat;
-			_nativeTextField.htmlText = _text;
+			if(_styleSheet)
+				_nativeTextField.htmlText = _text;
+			else
+				_nativeTextField.text = _text;
+			
 			_nativeTextField.textColor = _textColor;
 
 			_nativeTextField.border = _border;
@@ -309,6 +323,15 @@ package de.nulldesign.nd2d.display {
 			_nativeTextField.wordWrap = _wordWrap;
 			_nativeTextField.embedFonts = _embedFonts;
 			_nativeTextField.condenseWhite = _condenseWhite;
+			
+			// Set text field properties.
+			if(_styleSheet)
+				_nativeTextField.styleSheet = _style;
+			else 
+			{
+				_nativeTextField.defaultTextFormat = _textFormat;
+				_nativeTextField.setTextFormat(_textFormat);
+			}
 
 			// Adjust native text field width and height.
 			_nativeTextField.width = _textWidth > 0 ? _textWidth : _nativeTextField.textWidth;
