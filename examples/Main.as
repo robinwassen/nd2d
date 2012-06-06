@@ -32,6 +32,7 @@ package
 {
 
 	import avmplus.getQualifiedClassName;
+	import de.nulldesign.nd2d.display.scenetransitions.FadeTransition;
 
 	import com.bit101.components.PushButton;
 
@@ -170,18 +171,15 @@ package
 
 		public function nextDemo():void
 		{
-			if(scene) {
-				scene.dispose();
-			}
-
 			camera.reset();
 
 			sceneText.text = "(" + (activeSceneIdx + 1) + "/" + scenes.length + ") " + getQualifiedClassName(scenes[activeSceneIdx]) + " // hit space for next test. f for fullscreen";
 
 			var sceneClass:Class = scenes[activeSceneIdx++] as Class;
 			var currentScene:Scene2D = new sceneClass();
-
-			setActiveScene(currentScene);
+			var prevScene:Scene2D = scene;
+			
+			setActiveScene(currentScene, new FadeTransition(3));
 
 			if (activeSceneIdx > scenes.length - 1)
 			{

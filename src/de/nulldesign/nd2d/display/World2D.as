@@ -30,8 +30,10 @@
 
 package de.nulldesign.nd2d.display {
 
+	import de.nulldesign.nd2d.display.scenetransitions.ASceneTransition;
 	import de.nulldesign.nd2d.materials.shader.ShaderCache;
 	import de.nulldesign.nd2d.utils.StatsObject;
+	import flash.system.System;
 
 	import flash.display.Sprite;
 	import flash.display3D.Context3D;
@@ -73,7 +75,7 @@ package de.nulldesign.nd2d.display {
 	 * There can be only one active scene.
 	 *
 	 */ public class World2D extends Sprite {
-
+		
 		protected var camera:Camera2D = new Camera2D(1, 1);
 		protected var context3D:Context3D;
 		protected var stageID:uint;
@@ -93,7 +95,11 @@ package de.nulldesign.nd2d.display {
 		protected var statsObject:StatsObject = new StatsObject();
 
 		internal var topMostMouseNode:Node2D;
-
+		
+		private var nextScene:Scene2D;
+		private var sceneTransition:ASceneTransition;
+		private var disposeCurrentSceneAfterTransition:Boolean;
+		
 		public static var isHardwareAccelerated:Boolean;
 		public static var gameSpeed:Number = 1;
 
@@ -112,8 +118,7 @@ package de.nulldesign.nd2d.display {
 			addEventListener(Event.ADDED_TO_STAGE, addedToStage);
 		}
 
-		protected function addedToStage(event:Event):void {
-
+		protected function addedToStage(event:Event):void {			
 			removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
 			stage.addEventListener(Event.RESIZE, resizeStage);
 			stage.frameRate = frameRate;
@@ -142,8 +147,7 @@ package de.nulldesign.nd2d.display {
 			throw new Error("The SWF is not embedded properly. The 3D context can't be created. Wrong WMODE? Set it to 'direct'. For AIR it's renderMode = direct in the application descriptor");
 		}
 
-		protected function context3DCreated(e:Event):void {
-
+		protected function context3DCreated(e:Event):void {			
 			context3D = stage.stage3Ds[stageID].context3D;
 			context3D.enableErrorChecking = enableErrorChecking;
 			context3D.setCulling(Context3DTriangleFace.NONE);
@@ -239,15 +243,19 @@ package de.nulldesign.nd2d.display {
 
 			var t:Number = getTimer() * 0.001;			
 			var elapsed:Number = (t - lastFramesTime) * World2D.gameSpeed;
+			
+			if((scene || nextScene) && context3D && context3D.driverInfo != "Disposed") {
+				
+				if (scene)
+					context3D.clear(scene.br, scene.bg, scene.bb, 1.0);
+				else 
+					context3D.clear(nextScene.br, nextScene.bg, nextScene.bb, 1.0);
 
-			if(scene && context3D && context3D.driverInfo != "Disposed") {
-				context3D.clear(scene.br, scene.bg, scene.bb, 1.0);
-
-				if(!isPaused) {
-					scene.stepNode(elapsed, t);
+				if (!isPaused && !nextScene) {						
+					scene.stepNode(elapsed, t);				
 				}
 
-				if(deviceWasLost) {
+				if (deviceWasLost) {
 					ShaderCache.getInstance().handleDeviceLoss();
 					scene.handleDeviceLoss();
 					deviceWasLost = false;
@@ -255,28 +263,62 @@ package de.nulldesign.nd2d.display {
 
 				statsObject.totalDrawCalls = 0;
 				statsObject.totalTris = 0;
-
-				scene.drawNode(context3D, camera, false, statsObject);
+				
+				if (scene) {
+					scene.drawNode(context3D, camera, false, statsObject);
+				}
+				
+				if (nextScene) {					
+					if (sceneTransition) {
+						context3D.drawToBitmapData(sceneTransition.sceneBitmapData);						
+					}
+					
+					changeToNextScene();
+				}
+				
+				if (sceneTransition) {
+					sceneTransition.stepNode(elapsed, t);
+					sceneTransition.drawNode(context3D, camera, false, statsObject);
+					
+					if (sceneTransition.isDone) {
+						sceneTransition.setStageAndCamRef(null, null);
+						sceneTransition.dispose();
+						sceneTransition = null;
+					}
+				}
 
 				context3D.present();
 			}
 
 			lastFramesTime = t;
 		}
-
-		public function setActiveScene(value:Scene2D):void {
-
-			if(scene) {
-				scene.setStageAndCamRef(null, null);
+		
+		public function setActiveScene(value:Scene2D, transition:ASceneTransition = null, disposeCurrentSceneAfterTransition:Boolean = true):void {		
+			nextScene 		= value;						
+			sceneTransition = transition;	
+			
+			if (transition) {
+				transition.setStageAndCamRef(stage, camera);
+			}
+		}
+		
+		private function changeToNextScene() : void {					
+			if (scene) {
+				scene.setStageAndCamRef(null, null);	
+				
+				if (disposeCurrentSceneAfterTransition) {
+					scene.dispose();
+				}
 			}
 
-			this.scene = value;
-
+			scene = nextScene;
+			nextScene = null;
+			
 			if(scene) {
 				scene.setStageAndCamRef(stage, camera);
 			}
 		}
-
+		
 		public function start():void {
 			wakeUp();
 		}
