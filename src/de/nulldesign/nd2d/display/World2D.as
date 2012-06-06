@@ -33,7 +33,6 @@ package de.nulldesign.nd2d.display {
 	import de.nulldesign.nd2d.display.scenetransitions.ASceneTransition;
 	import de.nulldesign.nd2d.materials.shader.ShaderCache;
 	import de.nulldesign.nd2d.utils.StatsObject;
-	import flash.system.System;
 
 	import flash.display.Sprite;
 	import flash.display3D.Context3D;

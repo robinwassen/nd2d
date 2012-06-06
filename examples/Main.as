@@ -176,8 +176,7 @@ package
 			sceneText.text = "(" + (activeSceneIdx + 1) + "/" + scenes.length + ") " + getQualifiedClassName(scenes[activeSceneIdx]) + " // hit space for next test. f for fullscreen";
 
 			var sceneClass:Class = scenes[activeSceneIdx++] as Class;
-			var currentScene:Scene2D = new sceneClass();
-			var prevScene:Scene2D = scene;
+			var currentScene:Scene2D = new sceneClass();			
 			
 			setActiveScene(currentScene, new FadeTransition(3));
 
